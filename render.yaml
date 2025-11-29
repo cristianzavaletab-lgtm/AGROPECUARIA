@@ -22,6 +22,8 @@ services:
           property: connectionString
       - key: WEB_CONCURRENCY
         value: 4
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://agropecuaria-mijael.onrender.com
 
 databases:
   - name: agropecuaria-db

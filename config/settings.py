@@ -204,8 +204,8 @@ if not DEBUG:
     # CSRF trusted origins for production
     CSRF_TRUSTED_ORIGINS = config(
         'CSRF_TRUSTED_ORIGINS',
-        default='',
-        cast=Csv()
+        default='https://*.onrender.com',
+        cast=lambda v: [s.strip() for s in v.split(',')]
     )
 
 # File upload settings
