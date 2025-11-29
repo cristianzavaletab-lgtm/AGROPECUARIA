@@ -59,22 +59,6 @@
             </a>
 
             <a href="{% url 'sales:pos' %}" class="drawer-nav-item {% if 'pos' in request.path %}active{% endif %}">
-                <i class="bi bi-cart-check"></i>
-                <span>Punto de Venta</span>
-            </a>
-
-            <div class="drawer-divider"></div>
-
-            <a href="{% url 'products:product_list' %}"
-                class="drawer-nav-item {% if 'products' in request.path %}active{% endif %}">
-                <i class="bi bi-box-seam"></i>
-                <span>Productos</span>
-            </a>
-
-            <a href="{% url 'sales:sale_list' %}"
-                class="drawer-nav-item {% if 'sales' in request.path and 'pos' not in request.path %}active{% endif %}">
-                <i class="bi bi-receipt"></i>
-                <span>Ventas</span>
             </a>
 
             <a href="{% url 'purchases:purchase_list' %}"

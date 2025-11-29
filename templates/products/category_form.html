@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - AGRO{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="post" class="form-layout">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-error">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}" class="form-label">Nombre</label>
+            <input type="text" name="{{ form.name.name }}" id="{{ form.name.id_for_label }}"
+                class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                value="{{ form.name.value|default:'' }}" required>
+            {% if form.name.errors %}
+            <div class="invalid-feedback">{{ form.name.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}" class="form-label">Descripción</label>
+            <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}"
+                class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                rows="3">{{ form.description.value|default:'' }}</textarea>
+            {% if form.description.errors %}
+            <div class="invalid-feedback">{{ form.description.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.icon.id_for_label }}" class="form-label">Icono (Bootstrap Icons)</label>
+            <input type="text" name="{{ form.icon.name }}" id="{{ form.icon.id_for_label }}"
+                class="form-control {% if form.icon.errors %}is-invalid{% endif %}"
+                value="{{ form.icon.value|default:'bi-tag' }}" placeholder="ej: bi-box">
+            <small class="text-muted">Nombre de la clase del icono (ej: bi-tag, bi-box, bi-cart)</small>
+            {% if form.icon.errors %}
+            <div class="invalid-feedback">{{ form.icon.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'products:category_list' %}" class="btn btn-outline">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
