@@ -52,19 +52,6 @@
         </div>
 
         <div class="drawer-nav">
-            <a href="{% url 'reports:dashboard' %}"
-                class="drawer-nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                <i class="bi bi-speedometer2"></i>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="{% url 'sales:pos' %}" class="drawer-nav-item {% if 'pos' in request.path %}active{% endif %}">
-            </a>
-
-            <a href="{% url 'purchases:purchase_list' %}"
-                class="drawer-nav-item {% if 'purchases' in request.path %}active{% endif %}">
-                <i class="bi bi-bag-plus"></i>
-                <span>Compras</span>
             </a>
 
             <div class="drawer-divider"></div>
