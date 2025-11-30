@@ -155,7 +155,8 @@
                         </div>
                         <div class="col-6">
                             <label class="form-label">Nombre</label>
-                            <input type="text" id="newCustomerName" class="form-control" placeholder="Nombre y Apellido">
+                            <input type="text" id="newCustomerName" class="form-control"
+                                placeholder="Nombre y Apellido">
                         </div>
                     </div>
                     <div class="row mt-sm">
@@ -193,7 +194,7 @@
                 <span>Subtotal:</span>
                 <strong id="subtotalDisplay">S/ 0.00</strong>
             </div>
-            
+
             <div class="total-row" style="font-size: var(--font-size-xl); color: var(--primary);">
                 <span>TOTAL:</span>
                 <strong id="totalDisplay">S/ 0.00</strong>
@@ -208,10 +209,11 @@
         <button class="btn btn-outline btn-block mt-sm" onclick="clearCart()">
             <i class="bi bi-trash"></i> Limpiar Carrito
         </button>
-        <button class="btn btn-secondary btn-block mt-sm" id="btnShareWhatsApp" style="display:none;" onclick="shareInvoicePNG()">
+        <button class="btn btn-secondary btn-block mt-sm" id="btnShareWhatsApp" style="display:none;"
+            onclick="shareInvoicePNG()">
             <i class="bi bi-whatsapp"></i> Compartir PNG por WhatsApp
         </button>
-        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -258,6 +260,27 @@
         updateTotals();
     }
 
+    function setQuantity(productId, qty) {
+        const item = cart.find(item => item.product_id === productId);
+        if (!item) return;
+
+        let newQty = parseInt(qty);
+
+        if (isNaN(newQty) || newQty < 1) {
+            newQty = 1;
+        }
+
+        if (newQty > item.max_stock) {
+            App.showToast('Stock insuficiente. Máximo: ' + item.max_stock, 'warning');
+            newQty = item.max_stock;
+        }
+
+        item.quantity = newQty;
+        item.subtotal = item.quantity * item.price;
+        renderCart();
+        updateTotals();
+    }
+
     function updateQuantity(productId, delta) {
         const item = cart.find(item => item.product_id === productId);
         if (!item) return;
@@ -268,15 +291,7 @@
             return;
         }
 
-        if (newQty > item.max_stock) {
-            App.showToast('Stock insuficiente', 'warning');
-            return;
-        }
-
-        item.quantity = newQty;
-        item.subtotal = item.quantity * item.price;
-        renderCart();
-        updateTotals();
+        setQuantity(productId, newQty);
     }
 
     function renderCart() {
@@ -301,7 +316,12 @@
             </div>
             <div class="cart-item-qty">
                 <button class="qty-btn" onclick="updateQuantity(${item.product_id}, -1)">-</button>
-                <span style="min-width: 30px; text-align: center; font-weight: bold;">${item.quantity}</span>
+                <input type="number" class="form-control" 
+                       style="width: 70px; text-align: center; padding: 2px; height: 32px; margin: 0 5px;" 
+                       value="${item.quantity}" 
+                       min="1" 
+                       max="${item.max_stock}"
+                       onchange="setQuantity(${item.product_id}, this.value)">
                 <button class="qty-btn" onclick="updateQuantity(${item.product_id}, 1)">+</button>
             </div>
             <strong style="min-width: 60px; text-align: right;">S/ ${item.subtotal.toFixed(2)}</strong>
@@ -394,7 +414,7 @@
                         a.click();
                         document.body.removeChild(a);
                         document.getElementById('btnShareWhatsApp').style.display = 'block';
-                    } catch (e) {}
+                    } catch (e) { }
                 }
                 clearCart();
                 setTimeout(() => {
@@ -423,22 +443,22 @@
     });
 </script>
 {% endblock %}
-    async function shareInvoicePNG() {
-        if (!lastInvoicePngUrl) {
-            App.showToast('No hay factura PNG disponible', 'warning');
-            return;
-        }
-        try {
-            const res = await fetch(lastInvoicePngUrl);
-            const blob = await res.blob();
-            const file = new File([blob], 'factura.png', { type: 'image/png' });
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({ files: [file], title: 'Factura' });
-            } else {
-                window.open('https://wa.me/?text=', '_blank');
-                App.showToast('Adjunta el PNG descargado en WhatsApp', 'info');
-            }
-        } catch (e) {
-            App.showToast('No se pudo compartir la factura', 'error');
-        }
-    }
+async function shareInvoicePNG() {
+if (!lastInvoicePngUrl) {
+App.showToast('No hay factura PNG disponible', 'warning');
+return;
+}
+try {
+const res = await fetch(lastInvoicePngUrl);
+const blob = await res.blob();
+const file = new File([blob], 'factura.png', { type: 'image/png' });
+if (navigator.canShare && navigator.canShare({ files: [file] })) {
+await navigator.share({ files: [file], title: 'Factura' });
+} else {
+window.open('https://wa.me/?text=', '_blank');
+App.showToast('Adjunta el PNG descargado en WhatsApp', 'info');
+}
+} catch (e) {
+App.showToast('No se pudo compartir la factura', 'error');
+}
+}
